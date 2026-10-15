@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!--
+      페이지 인코딩을 UTF-8로 지정해 한글이 깨지지 않도록 합니다.
+      모바일에서 화면이 적절히 보이도록 viewport 설정을 넣었습니다.
+    -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sub Tracker</title>
+
+    <!--
+      외부 CSS 파일을 연결합니다.
+      화면의 색상, 레이아웃, 카드 디자인, 반응형 스타일은 이 파일에서 관리합니다.
+    -->
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+
+  <body>
+    <!--
+      전체 앱을 감싸는 최상위 컨테이너입니다.
+      화면 가운데 정렬하고 최대 너비를 제한해서 데스크톱/모바일에서 보기 좋게 만듭니다.
+    -->
+    <div class="app-shell">
+      <!--
+        상단 헤더 영역입니다.
+        앱 이름과 제목을 표시해 사용자에게 현재 페이지가 구독 관리 화면임을 알려줍니다.
+      -->
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Sub Tracker</p>
+          <h1>구도도도도독</h1>
+        </div>
+      </header>
+
+      <!--
+        메인 콘텐츠 영역입니다.
+        아래는 요약 카드, 구독 입력 폼, 목록, 카테고리 비중표 순서로 배치되어 있습니다.
+      -->
+      <main class="page">
+        <!--
+          상단 요약 카드 영역입니다.
+          사용자가 입력한 구독 데이터 기반으로 월 합계, 연간 합계, 이번 주 결제 예정 건수를 보여줍니다.
+          각 카드 안의 strong 태그에는 JS에서 값이 채워집니다.
+        -->
+        <section class="summary-grid" aria-label="구독 요약">
+          <article class="summary-card accent-blue">
+            <span class="card-label">월 합계</span>
+            <strong id="totalMonthly">0원</strong>
+          </article>
+          <article class="summary-card accent-purple">
+            <span class="card-label">연간 합계</span>
+            <strong id="totalYearly">0원</strong>
+          </article>
+          <article class="summary-card accent-green">
+            <span class="card-label">이번 주 결제 예정</span>
+            <strong id="dueThisWeek">0건</strong>
+          </article>
+        </section>
+
+        <!--
+          두 개의 컬럼 레이아웃입니다.
+          왼쪽은 구독 추가/수정 폼, 오른쪽은 구독 목록을 보여줍니다.
+          이렇게 나누면 입력과 결과를 동시에 볼 수 있어 편합니다.
+        -->
+        <section class="content-grid">
+          <!--
+            입력 폼 영역입니다.
+            form 내부의 input/select는 새 구독 추가 또는 기존 구독 수정에 사용됩니다.
+          -->
+          <aside class="panel form-panel">
+            <div class="section-header">
+              <h2 id="formTitle">새 구독 추가</h2>
+            </div>
+
+            <form id="subscriptionForm">
+              <div class="field-group">
+                <label for="name">구독 이름</label>
+                <input id="name" name="name" type="text" placeholder="예: 넷플릭스" required />
+              </div>
+
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="amount">금액</label>
+                  <input id="amount" name="amount" type="number" min="0" step="100" placeholder="13500" required />
+                </div>
+                <div class="field-group">
+                  <label for="cycle">결제 주기</label>
+                  <select id="cycle" name="cycle">
+                    <option value="monthly">월간</option>
+                    <option value="yearly">연간</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="category">카테고리</label>
+                  <select id="category" name="category">
+                    <option value="영상">영상</option>
+                    <option value="음악">음악</option>
+                    <option value="운동">운동</option>
+                    <option value="생산성">생산성</option>
+                    <option value="기타">기타</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label for="paymentMethod">결제 수단</label>
+                  <input id="paymentMethod" name="paymentMethod" type="text" placeholder="예: 신한카드" required />
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label for="nextPaymentDate">다음 결제일</label>
+                <input id="nextPaymentDate" name="nextPaymentDate" type="date" required />
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="primary-btn" id="submitButton">추가하기</button>
+                <button type="button" class="secondary-btn hidden" id="cancelEditButton">취소</button>
+              </div>
+            </form>
+          </aside>
+
+          <!--
+            구독 목록 영역입니다.
+            이 div는 JS에서 카드 목록을 동적으로 채웁니다.
+            목록이 비어 있으면 "아직 등록된 구독이 없습니다" 메시지를 표시합니다.
+          -->
+          <section class="panel list-panel">
+            <div class="section-header">
+              <h2>구독 목록</h2>
+            </div>
+            <div id="subscriptionList" class="subscription-list" aria-live="polite"></div>
+          </section>
+        </section>
+
+        <!--
+          카테고리별 비중을 표시하는 영역입니다.
+          JS는 각 카테고리의 월비용 합계를 계산하고, 퍼센트와 막대 그래프로 보여줍니다.
+        -->
+        <section class="panel category-panel">
+          <div class="section-header">
+            <h2>카테고리별 비중</h2>
+          </div>
+          <div id="categoryBreakdown" class="category-breakdown"></div>
+        </section>
+      </main>
+    </div>
+
+    <!--
+      기존 logic.js는 전역 함수들을 정의하는 파일이므로, window.testData를 먼저 선언해
+      해당 파일이 실행될 때 'testData is not defined' 오류가 발생하지 않도록 합니다.
+      이후 main.js를 모듈 형태로 불러와 화면 동작을 제어합니다.
+    -->
+    <script>
+      window.testData = [];
+    </script>
+    <script src="./js/logic.js"></script>
+    <script type="module" src="./js/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,445 @@
+/*
+  이 CSS 파일은 전체 웹페이지의 시각적 디자인을 책임집니다.
+  변수(:root)를 통해 색상과 간격을 한 번에 관리할 수 있고,
+  각 컴포넌트별로 style을 나누어 이해하기 쉽게 구성했습니다.
+*/
+
+:root {
+  /*
+    색상 토큰입니다.
+    이 값들을 바꾸면 페이지 전체 톤을 쉽게 수정할 수 있습니다.
+  */
+  --bg: #f4f7fb;
+  --panel: #ffffff;
+  --panel-alt: #eef3ff;
+  --primary: #4f46e5;
+  --primary-soft: rgba(79, 70, 229, 0.12);
+  --text: #1f2937;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+}
+
+/*
+  브라우저 기본 스타일을 초기화합니다.
+  box-sizing: border-box를 넣어 padding/border를 포함한 크기를 계산하게 만듭니다.
+*/
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  background: linear-gradient(180deg, #f3f6ff 0%, var(--bg) 100%);
+  color: var(--text);
+}
+
+body {
+  min-height: 100vh;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+/*
+  앱 전체를 감싸는 영역입니다.
+  중앙 정렬 + 최대 폭 제한으로 큰 화면에서 여백을 적절하게 줍니다.
+*/
+.app-shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+}
+
+.topbar {
+  margin-bottom: 20px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+}
+
+/*
+  페이지 레이아웃 구성입니다.
+  page는 전체 콘텐츠를 세로로 쌓는 컨테이너이고,
+  summary-grid는 요약 카드들을 가로로 배치하는 영역입니다.
+*/
+.page {
+  display: grid;
+  gap: 20px;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.summary-card,
+.panel {
+  background: var(--panel);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+
+.summary-card {
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/*
+  각 요약 카드의 상단 배경 색을 다르게 해서 시각적 구분을 둡니다.
+  카드 색은 기능 구분에 도움을 줍니다.
+*/
+.accent-blue {
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(255, 255, 255, 1));
+}
+
+.accent-purple {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(255, 255, 255, 1));
+}
+
+.accent-green {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(255, 255, 255, 1));
+}
+
+.card-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.summary-card strong {
+  font-size: clamp(1.3rem, 2.8vw, 2rem);
+  letter-spacing: -0.04em;
+}
+
+/*
+  입력 폼과 구독 목록을 나란히 배치하는 영역입니다.
+  왼쪽에는 폼, 오른쪽에는 목록이 들어갑니다.
+*/
+.content-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 380px) minmax(0, 1fr);
+  gap: 20px;
+}
+
+.panel {
+  padding: 20px;
+}
+
+.section-header {
+  margin-bottom: 18px;
+}
+
+.section-header h2 {
+  font-size: 1.2rem;
+}
+
+/*
+  폼 입력 필드 스타일입니다.
+  각 입력칸은 세로로 쌓이고, 가로 2칸 레이아웃이 필요한 경우 field-row로 묶습니다.
+*/
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+input,
+select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--text);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.primary-btn,
+.secondary-btn,
+.card-action {
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.2s ease;
+}
+
+.primary-btn,
+.secondary-btn {
+  padding: 12px 16px;
+  font-weight: 700;
+}
+
+.primary-btn {
+  flex: 1;
+  background: var(--primary);
+  color: white;
+}
+
+.secondary-btn {
+  background: #eef2ff;
+  color: var(--primary);
+}
+
+.primary-btn:hover,
+.secondary-btn:hover,
+.card-action:hover {
+  transform: translateY(-1px);
+}
+
+.hidden {
+  display: none;
+}
+
+/*
+  구독 카드 리스트 스타일입니다.
+  subscription-item은 각 구독을 하나의 카드처럼 보여줍니다.
+*/
+.subscription-list {
+  display: grid;
+  gap: 12px;
+}
+
+.subscription-item {
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #fbfbff;
+}
+
+.item-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.item-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.category-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.item-title h3 {
+  font-size: 1.08rem;
+}
+
+.price {
+  font-size: 1.05rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.item-meta,
+.item-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.item-meta {
+  margin-bottom: 8px;
+}
+
+.item-details {
+  margin-bottom: 14px;
+}
+
+.dday-pill {
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: #ecfdf5;
+  color: var(--success);
+  font-weight: 700;
+}
+
+.item-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.card-action {
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.card-action.edit {
+  background: #eef2ff;
+  color: var(--primary);
+}
+
+.card-action.delete {
+  background: #fef2f2;
+  color: var(--danger);
+}
+
+.empty-state {
+  padding: 28px 16px;
+  text-align: center;
+  color: var(--muted);
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+  background: #f9fafb;
+}
+
+/*
+  카테고리 비중 표시용 막대 그래프 스타일입니다.
+  각 카테고리별로 width 값을 JS에서 설정해 비율을 표현합니다.
+*/
+.category-breakdown {
+  display: grid;
+  gap: 14px;
+}
+
+.category-row {
+  display: grid;
+  gap: 8px;
+}
+
+.category-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.88rem;
+}
+
+.bar {
+  position: relative;
+  height: 12px;
+  border-radius: 999px;
+  background: #eef2ff;
+  overflow: hidden;
+}
+
+.bar-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--primary), #8b5cf6);
+}
+
+.bar-fill.alt-2 {
+  background: linear-gradient(90deg, #14b8a6, #34d399);
+}
+
+.bar-fill.alt-3 {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+
+.bar-fill.alt-4 {
+  background: linear-gradient(90deg, #ef4444, #fb7185);
+}
+
+/*
+  태블릿/모바일 반응형 디자인입니다.
+  화면이 좁아지면 컬럼을 1개로 줄이고 버튼/입력 필드를 세로로 배치해
+  375px 같은 좁은 모바일 화면에서도 깨지지 않게 만듭니다.
+*/
+@media (max-width: 820px) {
+  .summary-grid,
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-shell {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .panel,
+  .summary-card {
+    padding: 16px;
+  }
+
+  .field-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions,
+  .item-head,
+  .item-meta,
+  .item-details,
+  .item-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .price {
+    font-size: 1rem;
+  }
+}
